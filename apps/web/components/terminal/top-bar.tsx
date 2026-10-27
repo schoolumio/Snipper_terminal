@@ -54,10 +54,10 @@ export function TopBar() {
   return (
     <header className={cn('sticky top-0 z-30 border-b bg-ink-950/90 backdrop-blur', live ? 'border-live/50' : 'border-ink-700')}>
       {live && <div className="h-[3px] w-full bg-[repeating-linear-gradient(45deg,var(--color-live)_0_8px,transparent_8px_16px)]" />}
-      <div className="flex h-12 items-center gap-3 px-3 lg:px-4">
+      <div className="flex h-12 items-center gap-2 px-3 sm:gap-3 lg:px-4">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <Logo />
-          <div className="leading-tight">
+          <div className="hidden leading-tight sm:block">
             <div className="text-[13px] font-semibold tracking-tight text-ink-100">{st?.name ?? 'Sniper Terminal'}</div>
             <div className="num text-[10px] text-ink-500">v{st?.version ?? '—'} · {st?.chain ?? '—'}</div>
           </div>
@@ -78,7 +78,9 @@ export function TopBar() {
           {st?.simulatedMarket && (
             <Tip content="Market data comes from the built-in deterministic simulator. No real tokens, prices or trades.">
               <span>
-                <Badge tone="warn" className="h-6 px-2">simulated data</Badge>
+                <Badge tone="warn" className="h-6 px-2">
+                  sim<span className="hidden sm:inline">ulated data</span>
+                </Badge>
               </span>
             </Tip>
           )}
@@ -106,6 +108,13 @@ export function TopBar() {
           </Button>
         </div>
       </div>
+      <nav className="flex gap-0.5 overflow-x-auto border-t border-ink-800 px-2 py-1 md:hidden">
+        {NAV.map((n) => (
+          <Link key={n.href} href={n.href} className={cn('shrink-0 rounded-[4px] px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.1em]', path === n.href ? 'bg-ink-800 text-ink-100' : 'text-ink-400')}>
+            {n.label}
+          </Link>
+        ))}
+      </nav>
       {(err || (st && (st.killSwitch || st.entriesPaused || st.breakers.some((b) => b.tripped)))) && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-ink-800 bg-ink-900/80 px-4 py-1.5 font-mono text-[11px]">
           {st?.killSwitch && <span className="text-risk">■ KILL SWITCH ACTIVE — new orders blocked · positions: {st.killSwitchPolicy.replace('_', ' ')}</span>}

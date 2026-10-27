@@ -7,6 +7,8 @@ describe('display formatting', () => {
     expect(usd('-3.2')).toBe('−$3.20');
     expect(usd('3.2', { sign: true })).toBe('+$3.20');
     expect(usd(null)).toBe('—');
+    expect(usd('0.003')).toBe('$0.003');
+    expect(usd('0.38')).toBe('$0.38');
   });
   it('compresses tiny token prices with subscript zeros', () => {
     expect(price('0.00001234')).toBe('0.0₄1234');

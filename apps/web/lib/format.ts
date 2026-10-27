@@ -4,6 +4,8 @@
  */
 
 const usdFmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+// Sub-dollar amounts (fees) keep up to 4 decimals so $0.003 does not read as $0.00.
+const usdSmallFmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
 const compactFmt = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 
 export function toNum(v: string | number | null | undefined): number {
@@ -14,7 +16,7 @@ export function toNum(v: string | number | null | undefined): number {
 export function usd(v: string | number | null | undefined, opts: { sign?: boolean } = {}): string {
   if (v === null || v === undefined) return '—';
   const n = toNum(v);
-  const s = usdFmt.format(Math.abs(n));
+  const s = (Math.abs(n) < 1 ? usdSmallFmt : usdFmt).format(Math.abs(n));
   const sign = n < 0 ? '−' : opts.sign && n > 0 ? '+' : '';
   return `${sign}$${s}`;
 }

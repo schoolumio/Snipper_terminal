@@ -251,6 +251,9 @@ export class Engine {
     this.alerts = st.recentAlerts.sort((a, b) => a.ts - b.ts);
     this.txStats.paper.submitted = st.counters.txSubmitted;
     this.txStats.paper.failed = st.counters.txFailed;
+    // Pipeline counters are per process, except transaction totals which come from the store.
+    this.counters.txSubmitted = st.counters.txSubmitted;
+    this.counters.txFailures = st.counters.txFailed;
     for (const m of ['paper', 'live'] as const) this.recomputeLossStreak(m);
 
     // Candidates that were mid-pipeline are stale after a restart.
@@ -974,7 +977,7 @@ export class Engine {
       estEntryCostPct: ec,
       estExitCostPct: ec,
       riskVerdict: p.riskVerdict,
-      isNewLaunch: true,
+      isNewLaunch: (now - c.pool.createdAt) / 1000 < 24 * 3600,
       now,
     });
     const conflicting =

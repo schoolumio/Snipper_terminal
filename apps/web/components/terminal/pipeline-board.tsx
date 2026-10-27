@@ -42,7 +42,7 @@ export function PipelineBoard() {
     <Panel
       index="02"
       title="Live flow · scan → risk → strategy → size → execute → monitor → exit"
-      right={<span className="num hidden text-[10px] text-ink-400 sm:inline">{c ? `${c.discovered} seen · ${c.rejected} filtered · ${c.entered} entered` : ''}</span>}
+      right={<span className="num hidden text-[10px] text-ink-400 sm:inline">{c ? `this session: ${c.discovered} seen · ${c.rejected} filtered · ${c.entered} entered` : ''}</span>}
     >
       <div className="flex flex-wrap items-center gap-2 border-b border-ink-700/60 px-3 py-2">
         <div className="relative">
