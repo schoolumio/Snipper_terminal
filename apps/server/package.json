@@ -1,0 +1,41 @@
+{
+  "name": "@sniper/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=../../.env src/main.ts",
+    "start": "node --env-file-if-exists=../../.env dist/main.js",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx --env-file-if-exists=../../.env src/db/migrate-cli.ts",
+    "db:seed": "tsx --env-file-if-exists=../../.env src/db/seed-cli.ts"
+  },
+  "dependencies": {
+    "@fastify/cookie": "11.1.5",
+    "@fastify/rate-limit": "11.2.1",
+    "@fastify/swagger": "9.9.2",
+    "@fastify/swagger-ui": "6.1.2",
+    "@fastify/websocket": "11.3.4",
+    "@sniper/core": "workspace:*",
+    "drizzle-orm": "0.45.4",
+    "fastify": "5.12.7",
+    "fastify-type-provider-zod": "7.0.0",
+    "ioredis": "5.11.1",
+    "pg": "8.23.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@types/pg": "8.23.1",
+    "@types/ws": "8.18.2",
+    "drizzle-kit": "0.31.11",
+    "tsup": "8.5.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "4.1.12",
+    "ws": "8.22.0"
+  }
+}
