@@ -89,6 +89,7 @@ export async function createRuntime(env: Env, now = Date.now()): Promise<Runtime
       hardLimits: env.hardLimits,
       defaultConfig: cfg,
       options: { name: env.APP_NAME, version: env.APP_VERSION, paperStartingEquity: env.PAPER_STARTING_EQUITY, liveTradingEnabled: env.LIVE_TRADING_ENABLED },
+      clock: Date.now,
     },
     now,
   );

@@ -103,6 +103,8 @@ export interface EngineDeps {
   hardLimits: HardLimits;
   defaultConfig: EngineConfig;
   options?: Partial<EngineOptions>;
+  /** Wall clock for liveness checks. Defaults to the engine's tick time (virtual time in backtests). */
+  clock?: () => number;
 }
 
 export class EngineError extends Error {
@@ -199,6 +201,7 @@ export class Engine {
   private lastEquityAt = 0;
   private lastEntryAt = 0;
   private lastPerfEmit = 0;
+  private readonly wall: () => number;
 
   constructor(deps: EngineDeps, now: number = Date.now()) {
     this.opts = { ...DEFAULT_ENGINE_OPTIONS, ...deps.options };
@@ -208,6 +211,7 @@ export class Engine {
     this.security = deps.security;
     this.adapters = { paper: deps.paperAdapter, live: deps.liveAdapter };
     this.hard = deps.hardLimits;
+    this.wall = deps.clock ?? (() => this.now);
     this.config = structuredClone(deps.defaultConfig);
     this.startedAt = now;
     this.now = now;
@@ -610,7 +614,7 @@ export class Engine {
       c.nextEvalAt = now + t.reevaluateEverySec * 1000;
       return;
     }
-    this.audit({ agent: 'scanner', action: 'SIGNAL', result: 'pass', correlationId: c.id, symbol: c.pool.token.symbol, tokenAddress: c.pool.token.address, reason: `scanner score ${sc.score} ≥ ${t.minScannerScore}`, metrics: { score: sc.score, liquidity: s(snap.liquidity, 2), vol5m: s(snap.volume.m5, 2), buys5m: snap.txns.m5.buys, sells5m: snap.txns.m5.sells } });
+    this.audit({ agent: 'scanner', action: 'QUALIFIED', result: 'pass', correlationId: c.id, symbol: c.pool.token.symbol, tokenAddress: c.pool.token.address, reason: `scanner score ${sc.score} ≥ ${t.minScannerScore}`, metrics: { score: sc.score, liquidity: s(snap.liquidity, 2), vol5m: s(snap.volume.m5, 2), buys5m: snap.txns.m5.buys, sells5m: snap.txns.m5.sells } });
     this.move(c, 'SCREENING', 'risk screening');
     this.counters.screened++;
     this.agents.update('risk', now, { state: 'working', currentTask: `screening $${c.pool.token.symbol}` });
@@ -1892,6 +1896,7 @@ export class Engine {
       if (!a) throw new EngineError('alert not found', 'not_found');
       a.acknowledged = true;
       this.put({ alerts: [a] });
+      this.emit({ type: 'alert', data: a });
     });
   }
 
@@ -1912,7 +1917,8 @@ export class Engine {
       chain: this.market.chain,
       marketSource: this.market.name,
       simulatedMarket: this.market.simulated,
-      running: this.initialized && this.lastTickAt !== null && this.now - this.lastTickAt < 15_000,
+      // Compared against the wall clock so a stalled loop is reported as not running.
+      running: this.initialized && this.lastTickAt !== null && this.wall() - this.lastTickAt < 15_000,
       entriesPaused: this.entriesPaused,
       pauseReason: this.pauseReason,
       killSwitch: this.killSwitch,

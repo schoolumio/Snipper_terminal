@@ -113,9 +113,10 @@ export function evaluateExit(input: ExitEvalInput): ExitEvaluation {
     }
     const trail = high.times(d(1).minus(pct(policy.trailing.trailPct)));
     if (trail.gt(stop)) {
+      // Only report meaningful raises (≥1%) to keep the audit log readable.
+      if (trail.gte(stop.times(1.01))) notes.push({ type: 'stop_moved', detail: `trailing stop raised to ${trail.toSignificantDigits(6).toString()} / token` });
       stop = trail;
       stopKind = 'trailing_stop';
-      notes.push({ type: 'stop_moved', detail: `trailing stop raised to ${trail.toSignificantDigits(6).toString()} / token` });
     }
   }
   if (!stop.eq(p.stopPricePerToken)) updates.stopPricePerToken = s(stop, 18);
