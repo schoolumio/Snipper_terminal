@@ -48,7 +48,7 @@ export default function BacktestPage() {
   const s = sel?.run.stats;
 
   return (
-    <div className="grid gap-2.5 xl:grid-cols-[360px_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-2.5 xl:grid-cols-[360px_minmax(0,1fr)]">
       <div className="flex flex-col gap-2.5">
         <Panel index="B1" title="Run a backtest" accent="var(--color-size)" bodyClassName="p-3 space-y-3">
           <p className="font-mono text-[11px] leading-relaxed text-ink-400">

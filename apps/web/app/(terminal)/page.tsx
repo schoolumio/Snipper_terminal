@@ -17,15 +17,15 @@ export default function TerminalPage() {
   const p = state.performance?.[viewMode];
   const series = state.equity[viewMode];
   return (
-    <div className="grid gap-2.5 xl:grid-cols-[272px_minmax(0,1fr)_380px]">
-      <aside className="order-2 xl:order-1">
+    <div className="grid grid-cols-1 gap-2.5 xl:grid-cols-[272px_minmax(0,1fr)_380px]">
+      <aside className="order-2 min-w-0 xl:order-1">
         <AgentRail />
       </aside>
       <div className="order-1 flex min-w-0 flex-col gap-2.5 xl:order-2">
         <KpiStrip />
         <PipelineBoard />
         <MetricTiles />
-        <div className="grid gap-2.5 2xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2.5 2xl:grid-cols-2">
           <PositionInspector />
           <Panel
             index="04"

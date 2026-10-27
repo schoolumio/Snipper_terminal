@@ -164,7 +164,7 @@ export default function SettingsPage() {
         {(msg || nErr > 0) && <div className={cn('w-full font-mono text-[11px]', msg?.ok ? 'text-up' : 'text-down')}>{msg?.text ?? `${nErr} validation issue(s) — fix before saving`}</div>}
       </div>
 
-      <div className="grid gap-2.5 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2.5 xl:grid-cols-2">
         <Group index="S1" title="Trading" accent="var(--color-exec)" desc={`Chain: ${cfg.trading.chain} (served by the configured market provider). Allocation is an upper bound — the sizer also caps by liquidity, exposure and risk budget.`}>
           <Field ctx={ctx} path={[...t, 'maxConcurrentPositions']} label="Max concurrent positions" kind="int" hard={String(hl.maxConcurrentPositions)} />
           <Field ctx={ctx} path={[...t, 'maxTradeAllocationPct']} label="Max trade allocation" unit="% eq" hard={`${hl.maxTradeAllocationPct}%`} />
